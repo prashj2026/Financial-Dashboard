@@ -120,18 +120,12 @@ SELECT
     ) AS Forecast_Depreciation
     
     -- Operating Cash (No Budget)
-    ,SUM(CASE WHEN AC.AccountClassID = 'CASHASSET' AND GL.LedgerID = 24 THEN 
-                                            IF(AC.Type = 'I' OR AC.Type = 'L', 
-                                            GL.TranPtdCredit - GL.TranPtdDebit, 
-                                            GL.TranPtdDebit - GL.TranPtdCredit)
-                ELSE NULL END                            
+    ,SUM(CASE WHEN AC.AccountClassID IN ('CASHASSET' ,'RESTRICTEDCASH') AND GL.LedgerID = 24 THEN YtdBalance
+                                            ELSE NULL END                            
     ) AS Actual_OperatingCash
     ,0 AS Budget_OperatingCash
-    ,SUM(CASE WHEN AC.AccountClassID = 'CASHASSET' AND GL.LedgerID = 35 THEN 
-                                            IF(AC.Type = 'I' OR AC.Type = 'L', 
-                                            GL.TranPtdCredit - GL.TranPtdDebit, 
-                                            GL.TranPtdDebit - GL.TranPtdCredit)
-                ELSE NULL END                            
+    ,SUM(CASE WHEN AC.AccountClassID IN ('CASHASSET' ,'RESTRICTEDCASH') AND GL.LedgerID = 35 THEN YtdBalance
+                                            ELSE NULL END                            
     ) AS Forecast_OperatingCash
 
 FROM `avana-data-warehouse-prod.ACUMATICA.GLHistory` AS GL
